@@ -1,0 +1,10 @@
+[project]
+name = "trivy-scan"
+version = "0.1.0"
+description = "Simple trivy scan runner"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "polars>=1.31.0",
+    "xlsxwriter>=3.2.5",
+]
