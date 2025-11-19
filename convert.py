@@ -12,8 +12,11 @@ args = parser.parse_args()
 with open(args.filename, "r") as fid:
     report = json.load(fid)
 
-df = pl.DataFrame(report["Results"][0]["Vulnerabilities"]).filter(
-    pl.col("Severity").is_in(["HIGH", "CRITICAL", "MEDIUM"])
+df = (
+    pl.DataFrame(report["Results"][0]["Vulnerabilities"])
+    .filter(pl.col("Severity").is_in(["HIGH", "CRITICAL", "MEDIUM"]))
+    .select(pl.all().exclude("PkgIdentifier", "VendorSeverity"))
 )
+
 
 df.write_excel("report.xlsx")
