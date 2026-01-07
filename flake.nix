@@ -15,9 +15,9 @@
     in
       pkgs.mkShell {
         packages = with pkgs; [
-          podman
           uv
           python312Packages.nox
+          trivy
         ];
       };
   };

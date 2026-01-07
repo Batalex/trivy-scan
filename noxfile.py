@@ -31,17 +31,13 @@ def scan(session: nox.Session) -> None:
     )
     session.log("Starting scan")
     session.run(
-        "podman",
-        "run",
-        "-v",
-        f"{path.absolute()}:/data",
-        "docker://aquasec/trivy",
+        "trivy",
         "rootfs",
-        "/data",
+        f"{path.absolute()}",
         "-f",
         "json",
         "--output",
-        "data/report.json",
+        "report.json",
         external=True,
     )
     session.log("Parsing Trivy report")
