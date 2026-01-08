@@ -45,7 +45,7 @@ def scan(session: nox.Session) -> None:
         "uv",
         "run",
         "convert.py",
-        f"{path / 'report.json'}",
+        "report.json",
         env={
             "UV_PROJECT_ENVIRONMENT": session.virtualenv.location,
         },
