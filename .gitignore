@@ -203,9 +203,11 @@ __marimo__/
 .streamlit/secrets.toml
 
 # Ignore all folders - probably tarballs extracted there
-*/
-
+spark*/
+apache*/
+*.tgz
 report.xlsx
+report.json
 
 
 

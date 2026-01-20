@@ -1,0 +1,48 @@
+name: Report CVEs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "53 4 * * 5" # Every Friday at 04:53 UTC
+
+jobs:
+  fetch_artifacts:
+    name: Fetch release artifacts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/determinate-nix-action@main
+
+      - name: Download releases
+        run: |
+          echo -e "${{ vars.RELEASES_CVE_SCANNING }}" > releases_to_scan
+          while read release; do
+            gh release download -R canonical/central-uploader "$(echo $release | tr -d '\r')" --pattern "*.tgz"
+          done <releases_to_scan
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract archives
+        run: |
+          shopt -s nullglob
+          mkdir releases
+          for f in *.tgz; do
+            tar xvf ${f} -C releases
+          done
+
+      - name: Run Trivy
+        run: |
+          mkdir reports
+          for release in releases/*; do
+              echo "Processing $release"
+              nix develop --command nox -s scan -- "$release"
+              mv report.xlsx "reports/${release}.xlsx"
+          done
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v6
+        with:
+          name: reports
+          path: reports
