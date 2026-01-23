@@ -44,7 +44,7 @@ jobs:
         run: |
           echo -e "${{ vars.RELEASES_CVE_SCANNING }}" > releases_to_scan
           while read release; do
-            gh release download -R canonical/central-uploader "$(echo $release | tr -d '\r')" --pattern "*.tgz"
+            gh release download -R canonical/central-uploader "$(echo $release | tr -d '\r')" --pattern "*.tgz" --pattern "*.tar.gz"
           done <releases_to_scan
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -54,6 +54,9 @@ jobs:
           shopt -s nullglob
           mkdir releases
           for f in *.tgz; do
+            tar xf ${f} -C releases
+          done
+          for f in *.tar.gz; do
             tar xf ${f} -C releases
           done
 
