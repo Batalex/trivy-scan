@@ -15,7 +15,7 @@ with open(args.filename, "r") as fid:
 df = (
     pl.DataFrame(report["Results"][0]["Vulnerabilities"])
     .filter(pl.col("Severity").is_in(["HIGH", "CRITICAL", "MEDIUM"]))
-    .select(pl.all().exclude("PkgIdentifier", "VendorSeverity"))
+    .select(pl.all().exclude("PkgIdentifier", "VendorSeverity", "Fingerprint"))
 )
 
 
