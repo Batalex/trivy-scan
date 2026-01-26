@@ -1,5 +1,4 @@
 import nox
-import shutil
 from pathlib import Path
 
 nox.options.default_venv_backend = "uv"
@@ -18,10 +17,6 @@ def scan(session: nox.Session) -> None:
         case _:
             session.log("You must pass a single path to a build folder to continue.")
             return
-
-    if not shutil.which("podman"):
-        session.log("Command 'podman' not found.")
-        return
 
     session.run_install(
         "uv",
