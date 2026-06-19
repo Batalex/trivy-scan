@@ -77,13 +77,22 @@ def diff(session: nox.Session) -> None:
     with path2.open("r", encoding="utf8") as f:
         report2 = json.load(f)
 
-    cves_before = {
-        vuln["VulnerabilityID"] for vuln in report1["Results"][0]["Vulnerabilities"]
-    }
-    cves_after = {
+    cves_before = report1["Results"][0]["Vulnerabilities"]
+    cves_id_after = {
         vuln["VulnerabilityID"] for vuln in report2["Results"][0]["Vulnerabilities"]
     }
 
-    diff = cves_before - cves_after
-    print(f"{len(diff)} CVE(s) addressed:")
-    print(" ".join(sorted(diff)))
+    diff = [
+        vuln for vuln in cves_before if vuln["VulnerabilityID"] not in cves_id_after
+    ]
+
+    fixed = sorted(
+        set(
+            # f"{vuln['VulnerabilityID']}" # simple display
+            # f"{vuln['Severity']} {vuln['VulnerabilityID']}" # compact display
+            f"{vuln['VulnerabilityID']} \ton {vuln['PkgName']} ({vuln['Severity']})"  # full display
+            for vuln in diff
+        )
+    )
+    print(f"{len(fixed)} CVE(s) addressed:")
+    print("\n".join(fixed))
